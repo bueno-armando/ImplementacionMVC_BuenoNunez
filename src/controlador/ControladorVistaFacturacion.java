@@ -1,81 +1,39 @@
 package controlador;
 
-import javax.swing.JOptionPane;
-import modelo.LogicaFacturacion;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import modelo.dao.DAOFactura;
+import modelo.vo.Factura;
 import vista.VistaFacturacion;
 
 public class ControladorVistaFacturacion {
+
     private VistaFacturacion vista;
-    private LogicaFacturacion logica;
+    private DAOFactura daoFactura;
 
-    public ControladorVistaFacturacion(VistaFacturacion vista) {
-        this.vista = vista;
-        this.logica = new LogicaFacturacion();
-
-        // Añadir los listeners a los botones
-        this.vista.getBtnNuevo().addActionListener(e -> nuevoFactura());
-        this.vista.getBtnModificar().addActionListener(e -> modificarFactura());
-        this.vista.getBtnGuardar().addActionListener(e -> guardarFactura());
-        this.vista.getBtnEliminar().addActionListener(e -> eliminarFactura());
-        this.vista.getBtnLimpiar().addActionListener(e -> limpiarCampos());
-        this.vista.getBtnCerrar().addActionListener(e -> cerrarVista());
-    }
-
-    private void nuevoFactura() {
-        limpiarCampos();
-    }
-
-    private void modificarFactura() {
-        // Lógica para modificar una factura existente
-        String numeroFactura = vista.getNumeroFactura();
-        if (logica.existeFactura(numeroFactura)) {
-            String cliente = vista.getCliente();
-            String total = vista.getTotal();
-            logica.modificarFactura(numeroFactura, cliente, total);
-            JOptionPane.showMessageDialog(vista, "Factura modificada con éxito");
-        } else {
-            JOptionPane.showMessageDialog(vista, "Factura no encontrada");
-        }
-    }
-
-    private void guardarFactura() {
-        String numeroFactura = vista.getNumeroFactura();
-        String cliente = vista.getCliente();
-        String total = vista.getTotal();
-
-        if (numeroFactura.isEmpty() || cliente.isEmpty() || total.isEmpty()) {
-            JOptionPane.showMessageDialog(vista, "Todos los campos son obligatorios");
-            return;
-        }
-
-        if (logica.existeFactura(numeroFactura)) {
-            logica.modificarFactura(numeroFactura, cliente, total);
-            JOptionPane.showMessageDialog(vista, "Factura modificada con éxito");
-        } else {
-            logica.agregarFactura(numeroFactura, cliente, total);
-            JOptionPane.showMessageDialog(vista, "Factura agregada con éxito");
-        }
-    }
-
-    private void eliminarFactura() {
-        String numeroFactura = vista.getNumeroFactura();
-        if (logica.existeFactura(numeroFactura)) {
-            logica.eliminarFactura(numeroFactura);
-            JOptionPane.showMessageDialog(vista, "Factura eliminada con éxito");
-            limpiarCampos();
-        } else {
-            JOptionPane.showMessageDialog(vista, "Factura no encontrada");
-        }
-    }
-
-    private void limpiarCampos() {
-        vista.setNumeroFactura("");
-        vista.setCliente("");
-        vista.setTotal("");
-        vista.setBusqueda("");
-    }
-
-    private void cerrarVista() {
-        vista.dispose();
+    public ControladorVistaFacturacion() {
+        this.vista = new VistaFacturacion();
+        this.daoFactura = new DAOFactura();
+        this.vista.btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String numeroFactura = vista.txtNumeroFactura.getText();
+                String cliente = vista.txtCliente.getText();
+                String total = vista.txtTotal.getText();
+                Factura factura = new Factura(numeroFactura, cliente, total);
+                daoFactura.guardarFactura(factura);
+                vista.txtNumeroFactura.setText("");
+                vista.txtCliente.setText("");
+                vista.txtTotal.setText("");
+            }
+        });
+        this.vista.btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                vista.txtNumeroFactura.setText("");
+                vista.txtCliente.setText("");
+                vista.txtTotal.setText("");
+            }
+        });
     }
 }

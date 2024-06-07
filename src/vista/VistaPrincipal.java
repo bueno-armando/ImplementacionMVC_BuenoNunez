@@ -11,7 +11,6 @@ public class VistaPrincipal extends JFrame {
     private JButton btnClientes;
     private JButton btnVentas;
     private JButton btnFacturacion;
-    private JButton btnEtc;
     private JButton btnSalir;
     private ControladorVistaPrincipal controlador;
 
@@ -21,7 +20,6 @@ public class VistaPrincipal extends JFrame {
         btnProductos = new JButton("PRODUCTOS");
         btnClientes = new JButton("CLIENTES");
         btnVentas = new JButton("VENTAS");
-        btnFacturacion = new JButton("FACTURACION");
         btnFacturacion = new JButton("FACTURACION");
         btnSalir = new JButton("SALIR");
         btnFacturacion.addActionListener(new ActionListener() {

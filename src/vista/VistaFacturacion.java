@@ -1,131 +1,69 @@
 package vista;
 
-import controlador.ControladorVistaFacturacion;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import modelo.dao.DAOFactura;
+import modelo.vo.Factura;
 
 public class VistaFacturacion extends JFrame {
-    private JTextField txtNumeroFactura;
-    private JTextField txtCliente;
-    private JTextField txtTotal;
-    private JTextField txtBusqueda;
-    private JComboBox<String> comboBusqueda;
-    private JButton btnNuevo;
-    private JButton btnModificar;
-    private JButton btnGuardar;
-    private JButton btnEliminar;
-    private JButton btnLimpiar;
-    private JButton btnCerrar;
-    private ControladorVistaFacturacion controlador;
+
+    public JTextField txtNumeroFactura;
+    public JTextField txtCliente;
+    public JTextField txtTotal;
+    public JButton btnGuardar;
+    public JButton btnCancelar;
+    private DAOFactura daoFactura;
 
     public VistaFacturacion() {
-        controlador = new ControladorVistaFacturacion(this);
-
-        txtNumeroFactura = new JTextField(15);
-        txtCliente = new JTextField(15);
-        txtTotal = new JTextField(15);
-        txtBusqueda = new JTextField(15);
-        comboBusqueda = new JComboBox<>(new String[]{"Item 1"});
-
-        btnNuevo = new JButton("NUEVO");
-        btnModificar = new JButton("MODIFICAR");
-        btnGuardar = new JButton("GUARDAR");
-        btnEliminar = new JButton("ELIMINAR");
-        btnLimpiar = new JButton("LIMPIAR");
-        btnCerrar = new JButton("CERRAR");
-
-        JPanel panelCampos = new JPanel();
-        panelCampos.setLayout(new GridLayout(3, 2, 10, 10));
-        panelCampos.add(new JLabel("NUMERO FACTURA"));
-        panelCampos.add(txtNumeroFactura);
-        panelCampos.add(new JLabel("CLIENTE"));
-        panelCampos.add(txtCliente);
-        panelCampos.add(new JLabel("TOTAL"));
-        panelCampos.add(txtTotal);
-
-        JPanel panelBusqueda = new JPanel();
-        panelBusqueda.setLayout(new BorderLayout());
-        panelBusqueda.add(new JLabel("BUSQUEDA"), BorderLayout.NORTH);
-        panelBusqueda.add(txtBusqueda, BorderLayout.CENTER);
-        panelBusqueda.add(comboBusqueda, BorderLayout.SOUTH);
-
-        JPanel panelBotones = new JPanel();
-        panelBotones.setLayout(new GridLayout(1, 6, 10, 10));
-        panelBotones.add(btnNuevo);
-        panelBotones.add(btnModificar);
-        panelBotones.add(btnGuardar);
-        panelBotones.add(btnEliminar);
-        panelBotones.add(btnLimpiar);
-        panelBotones.add(btnCerrar);
-
-        setLayout(new BorderLayout());
-        add(panelCampos, BorderLayout.CENTER);
-        add(panelBusqueda, BorderLayout.EAST);
-        add(panelBotones, BorderLayout.SOUTH);
-
-        setTitle("VISTA FACTURACION");
-        setSize(600, 300);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+        this.daoFactura = new DAOFactura();
+        this.initComponents();
     }
 
-    public String getNumeroFactura() {
-        return txtNumeroFactura.getText();
-    }
+    private void initComponents() {
+        this.setTitle("Vista de Facturación");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(300, 200);
 
-    public void setNumeroFactura(String numeroFactura) {
-        txtNumeroFactura.setText(numeroFactura);
-    }
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel("Número de Factura: "), BorderLayout.NORTH);
+        panel.add(txtNumeroFactura = new JTextField(20), BorderLayout.CENTER);
+        panel.add(new JLabel("Cliente: "), BorderLayout.NORTH);
+        panel.add(txtCliente = new JTextField(20), BorderLayout.CENTER);
+        panel.add(new JLabel("Total: "), BorderLayout.NORTH);
+        panel.add(txtTotal = new JTextField(20), BorderLayout.CENTER);
 
-    public String getCliente() {
-        return txtCliente.getText();
-    }
+        JPanel botones = new JPanel();
+        botones.add(btnGuardar = new JButton("Guardar"));
+        botones.add(btnCancelar = new JButton("Cancelar"));
+        btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String numeroFactura = txtNumeroFactura.getText();
+                String cliente = txtCliente.getText();
+                String total = txtTotal.getText();
+                Factura factura = new Factura(numeroFactura, cliente, total);
+                daoFactura.guardarFactura(factura);
+                txtNumeroFactura.setText("");
+                txtCliente.setText("");
+                txtTotal.setText("");
+            }
+        });
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtNumeroFactura.setText("");
+                txtCliente.setText("");
+                txtTotal.setText("");
+            }
+        });
 
-    public void setCliente(String cliente) {
-        txtCliente.setText(cliente);
-    }
-
-    public String getTotal() {
-        return txtTotal.getText();
-    }
-
-    public void setTotal(String total) {
-        txtTotal.setText(total);
-    }
-
-    public String getBusqueda() {
-        return txtBusqueda.getText();
-    }
-
-    public void setBusqueda(String busqueda) {
-        txtBusqueda.setText(busqueda);
-    }
-
-    public JComboBox<String> getComboBusqueda() {
-        return comboBusqueda;
-    }
-
-    public JButton getBtnNuevo() {
-        return btnNuevo;
-    }
-
-    public JButton getBtnModificar() {
-        return btnModificar;
-    }
-
-    public JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public JButton getBtnEliminar() {
-        return btnEliminar;
-    }
-
-    public JButton getBtnLimpiar() {
-        return btnLimpiar;
-    }
-
-    public JButton getBtnCerrar() {
-        return btnCerrar;
+        panel.add(botones, BorderLayout.SOUTH);
+        this.add(panel);
     }
 }

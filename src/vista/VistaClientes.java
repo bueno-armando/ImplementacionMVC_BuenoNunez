@@ -1,133 +1,69 @@
 package vista;
 
-import controlador.ControladorVistaClientes;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import modelo.dao.DAOCliente;
+import modelo.vo.Cliente;
 
 public class VistaClientes extends JFrame {
-    private JTextField txtCURP;
-    private JTextField txtNombre;
-    private JTextField txtCelular;
-    private JTextField txtBusqueda;
-    private JComboBox<String> comboBusqueda;
-    private JButton btnNuevo;
-    private JButton btnModificar;
-    private JButton btnGuardar;
-    private JButton btnEliminar;
-    private JButton btnLimpiar;
-    private JButton btnCerrar;
-    private ControladorVistaClientes controlador;
+
+    public JTextField txtCurp;
+    public JTextField txtNombre;
+    public JTextField txtCelular;
+    public JButton btnGuardar;
+    public JButton btnCancelar;
+    private DAOCliente daoCliente;
 
     public VistaClientes() {
-        controlador = new ControladorVistaClientes(this);
-
-        txtCURP = new JTextField(15);
-        txtNombre = new JTextField(15);
-txtCURP = new JTextField(15);
-txtCelular = new JTextField(15);
-        txtCelular = new JTextField(15);
-        txtBusqueda = new JTextField(15);
-        comboBusqueda = new JComboBox<>(new String[]{"Item 1"});
-
-        btnNuevo = new JButton("NUEVO");
-        btnModificar = new JButton("MODIFICAR");
-        btnGuardar = new JButton("GUARDAR");
-        btnEliminar = new JButton("ELIMINAR");
-        btnLimpiar = new JButton("LIMPIAR");
-        btnCerrar = new JButton("CERRAR");
-
-        JPanel panelCampos = new JPanel();
-        panelCampos.setLayout(new GridLayout(3, 2, 10, 10));
-        panelCampos.add(new JLabel("CURP"));
-        panelCampos.add(txtCURP);
-        panelCampos.add(new JLabel("NOMBRE"));
-        panelCampos.add(txtNombre);
-        panelCampos.add(new JLabel("CELULAR"));
-        panelCampos.add(txtCelular);
-
-        JPanel panelBusqueda = new JPanel();
-        panelBusqueda.setLayout(new BorderLayout());
-        panelBusqueda.add(new JLabel("BUSQUEDA"), BorderLayout.NORTH);
-        panelBusqueda.add(txtBusqueda, BorderLayout.CENTER);
-        panelBusqueda.add(comboBusqueda, BorderLayout.SOUTH);
-
-        JPanel panelBotones = new JPanel();
-        panelBotones.setLayout(new GridLayout(1, 6, 10, 10));
-        panelBotones.add(btnNuevo);
-        panelBotones.add(btnModificar);
-        panelBotones.add(btnGuardar);
-        panelBotones.add(btnEliminar);
-        panelBotones.add(btnLimpiar);
-        panelBotones.add(btnCerrar);
-
-        setLayout(new BorderLayout());
-        add(panelCampos, BorderLayout.CENTER);
-        add(panelBusqueda, BorderLayout.EAST);
-        add(panelBotones, BorderLayout.SOUTH);
-
-        setTitle("VISTA CLIENTES");
-        setSize(600, 300);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+        this.daoCliente = new DAOCliente();
+        this.initComponents();
     }
 
-    public String getCURP() {
-        return txtCURP.getText();
-    }
+    private void initComponents() {
+        this.setTitle("Vista de Clientes");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(300, 200);
 
-    public void setCURP(String curp) {
-        txtCURP.setText(curp);
-    }
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel("CURP: "), BorderLayout.NORTH);
+        panel.add(txtCurp = new JTextField(20), BorderLayout.CENTER);
+        panel.add(new JLabel("Nombre: "), BorderLayout.NORTH);
+        panel.add(txtNombre = new JTextField(20), BorderLayout.CENTER);
+        panel.add(new JLabel("Celular: "), BorderLayout.NORTH);
+        panel.add(txtCelular = new JTextField(20), BorderLayout.CENTER);
 
-    public String getNombre() {
-        return txtNombre.getText();
-    }
+        JPanel botones = new JPanel();
+        botones.add(btnGuardar = new JButton("Guardar"));
+        botones.add(btnCancelar = new JButton("Cancelar"));
+        btnGuardar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String curp = txtCurp.getText();
+                String nombre = txtNombre.getText();
+                String celular = txtCelular.getText();
+                Cliente cliente = new Cliente(curp, nombre, celular);
+                daoCliente.guardarCliente(cliente);
+                txtCurp.setText("");
+                txtNombre.setText("");
+                txtCelular.setText("");
+            }
+        });
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtCurp.setText("");
+                txtNombre.setText("");
+                txtCelular.setText("");
+            }
+        });
 
-    public void setNombre(String nombre) {
-        txtNombre.setText(nombre);
-    }
-
-    public String getCelular() {
-        return txtCelular.getText();
-    }
-
-    public void setCelular(String celular) {
-        txtCelular.setText(celular);
-    }
-
-    public String getBusqueda() {
-        return txtBusqueda.getText();
-    }
-
-    public void setBusqueda(String busqueda) {
-        txtBusqueda.setText(busqueda);
-    }
-
-    public JComboBox<String> getComboBusqueda() {
-        return comboBusqueda;
-    }
-
-    public JButton getBtnNuevo() {
-        return btnNuevo;
-    }
-
-    public JButton getBtnModificar() {
-        return btnModificar;
-    }
-
-    public JButton getBtnGuardar() {
-        return btnGuardar;
-    }
-
-    public JButton getBtnEliminar() {
-        return btnEliminar;
-    }
-
-    public JButton getBtnLimpiar() {
-        return btnLimpiar;
-    }
-
-    public JButton getBtnCerrar() {
-        return btnCerrar;
+        panel.add(botones, BorderLayout.SOUTH);
+        this.add(panel);
     }
 }
